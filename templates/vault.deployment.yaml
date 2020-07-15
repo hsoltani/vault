@@ -31,7 +31,7 @@ spec:
         - "server"
         env:
           - name: VAULT_LOCAL_CONFIG
-            value: '{"storage": {"file": { "path": "/vault/data" }}, "listener": {"tcp":{"address": "0.0.0.0:8200","tls_disable":"1"}}}'
+            value: '{"storage": {"file": { "path": "/vault" }}, "listener": {"tcp":{"address": "0.0.0.0:8200","tls_disable":"1"}}}'
           - name: VAULT_ADDR
             value: http://vault:8200
         volumeMounts:
