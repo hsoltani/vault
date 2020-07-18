@@ -37,21 +37,43 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /vault
+          {{- if .Values.persistence.subPath }}
+          subPath: {{ .Values.persistence.subPath }}
+          {{- end }}
+        {{- if .Values.configurationFiles }}
+        {{- range $key, $val := .Values.configurationFiles }}
+        - name: configurations
+          mountPath: {{ $.Values.configurationFilesPath }}{{ $key }}
+          subPath: {{ $key }}
+        {{- end -}}
+        {{- end }}
         ports:
         - name: vault
           containerPort: 8200
           protocol: TCP
-     ## volumes:
-     ## - name: data
-     ##   emptyDir: {}
-      volumes:
-        - name: data
-          {{- if .Values.persistence.enabled }}
-          persistentVolumeClaim:
-            claimName: {{ template "vault.fullname" . }}
-          {{- else }}
-          emptyDir: {}
-          {{- end }}
+     volumes:
+      {{- if .Values.configurationFiles }}
+      - name: configurations
+        configMap:
+          name: {{ template "vault.fullname" . }}-configuration
+      {{- end }}
+      {{- if .Values.initializationFiles }}
+      - name: migrations
+        configMap:
+          name: {{ template "vault.fullname" . }}-initialization
+      {{- end }}
+      {{- if .Values.ssl.enabled }}
+      - name: certificates
+        secret:
+          secretName: {{ .Values.ssl.secret }}
+      {{- end }}
+      - name: data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim | default (include "vault.fullname" .) }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
