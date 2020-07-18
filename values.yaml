@@ -74,3 +74,20 @@ service:
   # loadBalancerIP:
 
 
+ssl:
+  enabled: false
+  secret: vault-ssl-certs
+  certificates:
+#  - name: vault-ssl-certs
+#    ca: |-
+#      -----BEGIN CERTIFICATE-----
+#      ...
+#      -----END CERTIFICATE-----
+#    cert: |-
+#      -----BEGIN CERTIFICATE-----
+#      ...
+#      -----END CERTIFICATE-----
+#    key: |-
+#      -----BEGIN RSA PRIVATE KEY-----
+#      ...
+#      -----END RSA PRIVATE KEY-----
